@@ -5,6 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SujoyOS</title>
   <style>
+    :root {
+      --bg-color: #1e1e2e;
+      --bg-gradient-start: #313244;
+      --bg-gradient-end: #11111b;
+      --text-color: #cdd6f4;
+      --accent-color: #cba6f7;
+      --topbar-bg: rgba(17, 17, 27, 0.8);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --window-bg: #1e1e2e;
+      --window-header: #181825;
+      --border-color: #45475a;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #eff1f5;
+      --bg-gradient-start: #e6e9ef;
+      --bg-gradient-end: #dce0e8;
+      --text-color: #4c4f69;
+      --accent-color: #8839ef;
+      --topbar-bg: rgba(230, 233, 239, 0.8);
+      --card-bg: rgba(0, 0, 0, 0.05);
+      --window-bg: #eff1f5;
+      --window-header: #e6e9ef;
+      --border-color: #bcc0cc;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -17,8 +43,9 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: #1e1e2e;
-      color: #cdd6f4;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
     }
 
     /* --- WELCOME SCREEN --- */
@@ -28,7 +55,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #181825, #313244);
+      background: linear-gradient(135deg, var(--bg-gradient-end), var(--bg-gradient-start));
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -38,7 +65,7 @@
     }
 
     .welcome-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--card-bg);
       padding: 40px;
       border-radius: 16px;
       backdrop-filter: blur(10px);
@@ -50,12 +77,12 @@
     .welcome-card h1 {
       font-size: 2.5rem;
       margin-bottom: 10px;
-      color: #cba6f7;
+      color: var(--accent-color);
     }
 
     .welcome-card p {
       margin-bottom: 20px;
-      color: #a6adc8;
+      opacity: 0.8;
     }
 
     .welcome-btn {
@@ -63,7 +90,7 @@
       font-size: 1rem;
       border: none;
       border-radius: 8px;
-      background-color: #cba6f7;
+      background-color: var(--accent-color);
       color: #11111b;
       font-weight: bold;
       cursor: pointer;
@@ -71,7 +98,6 @@
     }
 
     .welcome-btn:hover {
-      background-color: #b4befe;
       transform: scale(1.05);
     }
 
@@ -82,27 +108,39 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at center, #313244 0%, #11111b 100%);
+      background: radial-gradient(circle at center, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
       display: flex;
       flex-direction: column;
     }
 
     #top-bar {
       height: 32px;
-      background: rgba(17, 17, 27, 0.8);
+      background: var(--topbar-bg);
       backdrop-filter: blur(8px);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--border-color);
       font-size: 0.9rem;
       z-index: 1000;
     }
 
     .brand {
       font-weight: bold;
-      color: #cba6f7;
+      color: var(--accent-color);
+      cursor: pointer;
+    }
+
+    .top-bar-right {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      cursor: pointer;
+      font-size: 1rem;
     }
 
     #clock {
@@ -146,9 +184,9 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    .icon-img.advanced {
-      background-color: #f38ba8;
-    }
+    .icon-img.advanced { background-color: #f38ba8; }
+    .icon-img.calc { background-color: #a6e3a1; }
+    .icon-img.terminal { background-color: #fab387; }
 
     .icon-label {
       font-size: 0.8rem;
@@ -159,66 +197,231 @@
     /* --- WINDOW SYSTEM --- */
     .window {
       position: absolute;
-      width: 400px;
-      height: 300px;
-      background: #1e1e2e;
-      border: 1px solid #45475a;
+      width: 420px;
+      height: 320px;
+      background: var(--window-bg);
+      border: 1px solid var(--border-color);
       border-radius: 8px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      min-width: 200px;
-      min-height: 150px;
+      min-width: 250px;
+      min-height: 180px;
       z-index: 10;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .window.minimized {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.8) translateY(100px);
+    }
+
+    .window.maximized {
+      top: 32px !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: calc(100vh - 80px) !important;
+      border-radius: 0;
     }
 
     .window-header {
       height: 36px;
-      background: #181825;
+      background: var(--window-header);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 12px;
       cursor: move;
-      border-bottom: 1px solid #313244;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .window-title {
       font-size: 0.85rem;
       font-weight: 600;
-      color: #a6adc8;
+      opacity: 0.8;
     }
 
-    .close-btn {
-      width: 14px;
-      height: 14px;
-      background-color: #f38ba8;
+    .window-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .win-btn {
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       border: none;
       cursor: pointer;
     }
 
-    .close-btn:hover {
-      background-color: #eba0ac;
-    }
+    .close-btn { background-color: #f38ba8; }
+    .min-btn { background-color: #f9e2af; }
+    .max-btn { background-color: #a6e3a1; }
 
     .window-body {
       padding: 16px;
       flex-grow: 1;
       overflow-y: auto;
-      color: #cdd6f4;
+      color: var(--text-color);
     }
 
+    /* --- APP CONTENTS --- */
     .note-area {
       width: 100%;
-      height: 80%;
-      background: #11111b;
-      border: 1px solid #45475a;
-      color: #cdd6f4;
+      height: 85%;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
       padding: 8px;
       border-radius: 4px;
       resize: none;
+      outline: none;
+    }
+
+    /* Calculator Styles */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      height: 100%;
+    }
+
+    #calc-display {
+      grid-column: span 4;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      font-size: 1.5rem;
+      text-align: right;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .calc-btn {
+      background: var(--window-header);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      font-size: 1.1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .calc-btn:hover { background: var(--accent-color); color: #111; }
+
+    /* Terminal Styles */
+    .terminal-body {
+      background-color: #11111b;
+      color: #a6e3a1;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #terminal-output {
+      flex-grow: 1;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .terminal-input-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .terminal-prompt { margin-right: 8px; color: #cba6f7; }
+
+    #terminal-input {
+      background: transparent;
+      border: none;
+      color: inherit;
+      font-family: inherit;
+      width: 100%;
+      outline: none;
+    }
+
+    /* --- BOTTOM DOCK / TASKBAR --- */
+    #dock-container {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #dock {
+      background: var(--topbar-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 16px;
+      display: flex;
+      gap: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .dock-item {
+      width: 40px;
+      height: 40px;
+      font-size: 1.3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.05);
+      transition: transform 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .dock-item:hover {
+      transform: translateY(-5px) scale(1.1);
+      background: rgba(255,255,255,0.15);
+    }
+
+    .dock-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      width: 5px;
+      height: 5px;
+      background: var(--accent-color);
+      border-radius: 50%;
+    }
+
+    /* --- START MENU --- */
+    #start-menu {
+      position: absolute;
+      bottom: 65px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      background: var(--window-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1001;
+    }
+
+    .start-item {
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .start-item:hover {
+      background: rgba(255,255,255,0.1);
     }
   </style>
 </head>
@@ -227,15 +430,28 @@
   <div id="welcome-screen">
     <div class="welcome-card">
       <h1>SujoyOS</h1>
-      <p>SujoyOS is a personalized web OS experience.</p>
+      <p>A personal, feature-packed Web Desktop Experience.</p>
       <button class="welcome-btn" onclick="enterOS()">Enter Desktop</button>
     </div>
   </div>
 
   <div id="desktop">
     <div id="top-bar">
-      <span class="brand">SujoyOS</span>
-      <span id="clock">00:00:00 AM</span>
+      <span class="brand" onclick="toggleStartMenu()"> SujoyOS</span>
+      <div class="top-bar-right">
+        <span class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme">🌓</span>
+        <span id="clock">00:00:00 AM</span>
+      </div>
+    </div>
+
+    <div id="start-menu">
+      <div style="font-weight: bold; padding: 4px 12px; opacity: 0.6; font-size: 0.8rem;">APPLICATIONS</div>
+      <div class="start-item" onclick="openWindow('first-app'); toggleStartMenu();">📱 First App</div>
+      <div class="start-item" onclick="openWindow('advanced-app'); toggleStartMenu();">📝 Notes</div>
+      <div class="start-item" onclick="openWindow('calc-app'); toggleStartMenu();">🧮 Calculator</div>
+      <div class="start-item" onclick="openWindow('terminal-app'); toggleStartMenu();">💻 Terminal</div>
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 4px 0;">
+      <div class="start-item" onclick="location.reload()">🔄 Restart OS</div>
     </div>
 
     <div id="desktop-icons">
@@ -246,64 +462,180 @@
 
       <div class="icon" onclick="openWindow('advanced-app')">
         <div class="icon-img advanced">📝</div>
-        <span class="icon-label">Notes App</span>
+        <span class="icon-label">Notes</span>
+      </div>
+
+      <div class="icon" onclick="openWindow('calc-app')">
+        <div class="icon-img calc">🧮</div>
+        <span class="icon-label">Calculator</span>
+      </div>
+
+      <div class="icon" onclick="openWindow('terminal-app')">
+        <div class="icon-img terminal">💻</div>
+        <span class="icon-label">Terminal</span>
+      </div>
+    </div>
+
+    <div id="dock-container">
+      <div id="dock">
+        <div class="dock-item" id="dock-first-app" onclick="toggleWindowFromDock('first-app')">📱</div>
+        <div class="dock-item" id="dock-advanced-app" onclick="toggleWindowFromDock('advanced-app')">📝</div>
+        <div class="dock-item" id="dock-calc-app" onclick="toggleWindowFromDock('calc-app')">🧮</div>
+        <div class="dock-item" id="dock-terminal-app" onclick="toggleWindowFromDock('terminal-app')">💻</div>
       </div>
     </div>
   </div>
 
-  <div id="first-app" class="window" style="top: 100px; left: 150px; display: none;">
+  <div id="first-app" class="window" style="top: 80px; left: 100px; display: none;">
     <div class="window-header">
       <span class="window-title">First App</span>
-      <button class="close-btn" onclick="closeWindow('first-app')"></button>
+      <div class="window-controls">
+        <button class="win-btn min-btn" onclick="minimizeWindow('first-app')"></button>
+        <button class="win-btn max-btn" onclick="maximizeWindow('first-app')"></button>
+        <button class="win-btn close-btn" onclick="closeWindow('first-app')"></button>
+      </div>
     </div>
     <div class="window-body">
       <h3>Welcome Sujoy!</h3>
-      <p style="margin-top: 10px;">This is your first application running on SujoyOS.</p>
+      <p style="margin-top: 10px;">This is your customized personal environment desktop.</p>
     </div>
   </div>
 
-  <div id="advanced-app" class="window" style="top: 150px; left: 250px; display: none;">
+  <div id="advanced-app" class="window" style="top: 120px; left: 200px; display: none;">
     <div class="window-header">
-      <span class="window-title">Notes (Advanced App)</span>
-      <button class="close-btn" onclick="closeWindow('advanced-app')"></button>
+      <span class="window-title">Notes</span>
+      <div class="window-controls">
+        <button class="win-btn min-btn" onclick="minimizeWindow('advanced-app')"></button>
+        <button class="win-btn max-btn" onclick="maximizeWindow('advanced-app')"></button>
+        <button class="win-btn close-btn" onclick="closeWindow('advanced-app')"></button>
+      </div>
     </div>
     <div class="window-body">
-      <p style="margin-bottom: 8px;">Sujoy's Scratchpad:</p>
-      <textarea class="note-area" placeholder="Type your notes here..."></textarea>
+      <p style="margin-bottom: 8px; font-size: 0.85rem; opacity: 0.8;">Auto-saves to browser memory:</p>
+      <textarea id="note-input" class="note-area" placeholder="Type your notes here..."></textarea>
+    </div>
+  </div>
+
+  <div id="calc-app" class="window" style="top: 100px; left: 300px; width: 280px; height: 360px; display: none;">
+    <div class="window-header">
+      <span class="window-title">Calculator</span>
+      <div class="window-controls">
+        <button class="win-btn min-btn" onclick="minimizeWindow('calc-app')"></button>
+        <button class="win-btn close-btn" onclick="closeWindow('calc-app')"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="calc-grid">
+        <input type="text" id="calc-display" readonly value="0">
+        <button class="calc-btn" onclick="calcClear()">C</button>
+        <button class="calc-btn" onclick="calcAppend('/')">/</button>
+        <button class="calc-btn" onclick="calcAppend('*')">*</button>
+        <button class="calc-btn" onclick="calcAppend('-')">-</button>
+        
+        <button class="calc-btn" onclick="calcAppend('7')">7</button>
+        <button class="calc-btn" onclick="calcAppend('8')">8</button>
+        <button class="calc-btn" onclick="calcAppend('9')">9</button>
+        <button class="calc-btn" onclick="calcAppend('+')">+</button>
+        
+        <button class="calc-btn" onclick="calcAppend('4')">4</button>
+        <button class="calc-btn" onclick="calcAppend('5')">5</button>
+        <button class="calc-btn" onclick="calcAppend('6')">6</button>
+        <button class="calc-btn" onclick="calcCompute()" style="grid-row: span 2; height: 100%;">=</button>
+        
+        <button class="calc-btn" onclick="calcAppend('1')">1</button>
+        <button class="calc-btn" onclick="calcAppend('2')">2</button>
+        <button class="calc-btn" onclick="calcAppend('3')">3</button>
+        
+        <button class="calc-btn" onclick="calcAppend('0')" style="grid-column: span 2;">0</button>
+        <button class="calc-btn" onclick="calcAppend('.')">.</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="terminal-app" class="window" style="top: 140px; left: 150px; width: 480px; height: 300px; display: none;">
+    <div class="window-header">
+      <span class="window-title">Terminal</span>
+      <div class="window-controls">
+        <button class="win-btn min-btn" onclick="minimizeWindow('terminal-app')"></button>
+        <button class="win-btn max-btn" onclick="maximizeWindow('terminal-app')"></button>
+        <button class="win-btn close-btn" onclick="closeWindow('terminal-app')"></button>
+      </div>
+    </div>
+    <div class="window-body terminal-body">
+      <div id="terminal-output">SujoyOS v2.0 Terminal Terminal System
+Type 'help' for available commands.</div>
+      <div class="terminal-input-container">
+        <span class="terminal-prompt">sujoy@os:~$</span>
+        <input type="text" id="terminal-input" onkeydown="handleTerminalCommand(event)">
+      </div>
     </div>
   </div>
 
   <script>
-    // --- 1. WELCOME SCREEN TOGGLE ---
+    // --- 1. WELCOME SCREEN & START MENU TOGGLE ---
     function enterOS() {
       const welcomeScreen = document.getElementById('welcome-screen');
       welcomeScreen.style.opacity = '0';
-      setTimeout(() => {
-        welcomeScreen.style.visibility = 'hidden';
-      }, 500);
+      setTimeout(() => { welcomeScreen.style.visibility = 'hidden'; }, 500);
+    }
+
+    function toggleStartMenu() {
+      const menu = document.getElementById('start-menu');
+      menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
     }
 
     // --- 2. LIVE CLOCK ---
     function updateClock() {
       const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('clock').textContent = timeString;
+      document.getElementById('clock').textContent = now.toLocaleTimeString();
     }
     setInterval(updateClock, 1000);
     updateClock();
 
-    // --- 3. WINDOW MANAGEMENT ---
+    // --- 3. THEME TOGGLER ---
+    function toggleTheme() {
+      const currentTheme = document.body.getAttribute('data-theme');
+      if (currentTheme === 'light') {
+        document.body.removeAttribute('data-theme');
+      } else {
+        document.body.setAttribute('data-theme', 'light');
+      }
+    }
+
+    // --- 4. WINDOW SYSTEM & DOCK INTEGRATION ---
     let topZIndex = 100;
 
     function openWindow(id) {
       const win = document.getElementById(id);
       win.style.display = 'flex';
+      win.classList.remove('minimized');
       focusWindow(win);
+      document.getElementById(`dock-${id}`)?.classList.add('active');
     }
 
     function closeWindow(id) {
       const win = document.getElementById(id);
       win.style.display = 'none';
+      document.getElementById(`dock-${id}`)?.classList.remove('active');
+    }
+
+    function minimizeWindow(id) {
+      const win = document.getElementById(id);
+      win.classList.add('minimized');
+    }
+
+    function maximizeWindow(id) {
+      const win = document.getElementById(id);
+      win.classList.toggle('maximized');
+    }
+
+    function toggleWindowFromDock(id) {
+      const win = document.getElementById(id);
+      if (win.style.display === 'none' || win.classList.contains('minimized')) {
+        openWindow(id);
+      } else {
+        minimizeWindow(id);
+      }
     }
 
     function focusWindow(win) {
@@ -315,15 +647,17 @@
       win.addEventListener('mousedown', () => focusWindow(win));
     });
 
-    // --- 4. DRAGGABLE WINDOW LOGIC ---
+    // --- 5. DRAGGABLE WINDOW LOGIC ---
     document.querySelectorAll('.window-header').forEach(header => {
       header.addEventListener('mousedown', dragMouseDown);
 
       function dragMouseDown(e) {
-        if (e.target.classList.contains('close-btn')) return;
+        if (e.target.classList.contains('win-btn')) return;
 
         e.preventDefault();
         const windowEl = header.parentElement;
+        if (windowEl.classList.contains('maximized')) return;
+
         focusWindow(windowEl);
 
         let initialX = e.clientX;
@@ -349,6 +683,67 @@
         }
       }
     });
+
+    // --- 6. LOCALSTORAGE FOR NOTES ---
+    const noteArea = document.getElementById('note-input');
+    noteArea.value = localStorage.getItem('sujoyos_notes') || '';
+    noteArea.addEventListener('input', () => {
+      localStorage.setItem('sujoyos_notes', noteArea.value);
+    });
+
+    // --- 7. CALCULATOR LOGIC ---
+    const calcDisplay = document.getElementById('calc-display');
+    function calcAppend(val) {
+      if (calcDisplay.value === '0' || calcDisplay.value === 'Error') calcDisplay.value = '';
+      calcDisplay.value += val;
+    }
+    function calcClear() { calcDisplay.value = '0'; }
+    function calcCompute() {
+      try {
+        calcDisplay.value = eval(calcDisplay.value);
+      } catch {
+        calcDisplay.value = 'Error';
+      }
+    }
+
+    // --- 8. TERMINAL INTERACTION ---
+    function handleTerminalCommand(e) {
+      if (e.key === 'Enter') {
+        const input = e.target;
+        const command = input.value.trim().toLowerCase();
+        const output = document.getElementById('terminal-output');
+        
+        output.innerHTML += `\nsujoy@os:~$ ${input.value}`;
+
+        switch (command) {
+          case 'help':
+            output.innerHTML += `\nAvailable commands:\n- help: List commands\n- clear: Clear terminal output\n- date: View system time\n- theme: Toggle Dark/Light mode\n- about: OS Version`;
+            break;
+          case 'clear':
+            output.innerHTML = '';
+            break;
+          case 'date':
+            output.innerHTML += `\n${new Date().toString()}`;
+            break;
+          case 'theme':
+            toggleTheme();
+            output.innerHTML += `\nTheme toggled.`;
+            break;
+          case 'about':
+            output.innerHTML += `\nSujoyOS v2.0 - Built with Vanilla JS & CSS Grid/Flexbox.`;
+            break;
+          default:
+            if (command.startsWith('echo ')) {
+              output.innerHTML += `\n${input.value.slice(5)}`;
+            } else if (command !== '') {
+              output.innerHTML += `\nCommand not found: ${command}. Type 'help' for options.`;
+            }
+        }
+        
+        input.value = '';
+        output.scrollTop = output.scrollHeight;
+      }
+    }
   </script>
 </body>
 </html>
