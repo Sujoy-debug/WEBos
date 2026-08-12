@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SujoyOS</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #1e1e2e;
+      color: #cdd6f4;
+    }
+
+    /* --- WELCOME SCREEN --- */
+    #welcome-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #181825, #313244);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+
+    .welcome-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 40px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .welcome-card h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #cba6f7;
+    }
+
+    .welcome-card p {
+      margin-bottom: 20px;
+      color: #a6adc8;
+    }
+
+    .welcome-btn {
+      padding: 10px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #cba6f7;
+      color: #11111b;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .welcome-btn:hover {
+      background-color: #b4befe;
+      transform: scale(1.05);
+    }
+
+    /* --- OS DESKTOP & TOP BAR --- */
+    #desktop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #313244 0%, #11111b 100%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #top-bar {
+      height: 32px;
+      background: rgba(17, 17, 27, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.9rem;
+      z-index: 1000;
+    }
+
+    .brand {
+      font-weight: bold;
+      color: #cba6f7;
+    }
+
+    #clock {
+      font-variant-numeric: tabular-nums;
+    }
+
+    #desktop-icons {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: flex-start;
+      flex-grow: 1;
+    }
+
+    .icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 80px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .icon:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .icon-img {
+      width: 48px;
+      height: 48px;
+      background-color: #89b4fa;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .icon-img.advanced {
+      background-color: #f38ba8;
+    }
+
+    .icon-label {
+      font-size: 0.8rem;
+      text-align: center;
+      word-break: break-word;
+    }
+
+    /* --- WINDOW SYSTEM --- */
+    .window {
+      position: absolute;
+      width: 400px;
+      height: 300px;
+      background: #1e1e2e;
+      border: 1px solid #45475a;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 200px;
+      min-height: 150px;
+      z-index: 10;
+    }
+
+    .window-header {
+      height: 36px;
+      background: #181825;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 12px;
+      cursor: move;
+      border-bottom: 1px solid #313244;
+    }
+
+    .window-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #a6adc8;
+    }
+
+    .close-btn {
+      width: 14px;
+      height: 14px;
+      background-color: #f38ba8;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      background-color: #eba0ac;
+    }
+
+    .window-body {
+      padding: 16px;
+      flex-grow: 1;
+      overflow-y: auto;
+      color: #cdd6f4;
+    }
+
+    .note-area {
+      width: 100%;
+      height: 80%;
+      background: #11111b;
+      border: 1px solid #45475a;
+      color: #cdd6f4;
+      padding: 8px;
+      border-radius: 4px;
+      resize: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="welcome-screen">
+    <div class="welcome-card">
+      <h1>SujoyOS</h1>
+      <p>SujoyOS is a personalized web OS experience.</p>
+      <button class="welcome-btn" onclick="enterOS()">Enter Desktop</button>
+    </div>
+  </div>
+
+  <div id="desktop">
+    <div id="top-bar">
+      <span class="brand">SujoyOS</span>
+      <span id="clock">00:00:00 AM</span>
+    </div>
+
+    <div id="desktop-icons">
+      <div class="icon" onclick="openWindow('first-app')">
+        <div class="icon-img">📱</div>
+        <span class="icon-label">First App</span>
+      </div>
+
+      <div class="icon" onclick="openWindow('advanced-app')">
+        <div class="icon-img advanced">📝</div>
+        <span class="icon-label">Notes App</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="first-app" class="window" style="top: 100px; left: 150px; display: none;">
+    <div class="window-header">
+      <span class="window-title">First App</span>
+      <button class="close-btn" onclick="closeWindow('first-app')"></button>
+    </div>
+    <div class="window-body">
+      <h3>Welcome Sujoy!</h3>
+      <p style="margin-top: 10px;">This is your first application running on SujoyOS.</p>
+    </div>
+  </div>
+
+  <div id="advanced-app" class="window" style="top: 150px; left: 250px; display: none;">
+    <div class="window-header">
+      <span class="window-title">Notes (Advanced App)</span>
+      <button class="close-btn" onclick="closeWindow('advanced-app')"></button>
+    </div>
+    <div class="window-body">
+      <p style="margin-bottom: 8px;">Sujoy's Scratchpad:</p>
+      <textarea class="note-area" placeholder="Type your notes here..."></textarea>
+    </div>
+  </div>
+
+  <script>
+    // --- 1. WELCOME SCREEN TOGGLE ---
+    function enterOS() {
+      const welcomeScreen = document.getElementById('welcome-screen');
+      welcomeScreen.style.opacity = '0';
+      setTimeout(() => {
+        welcomeScreen.style.visibility = 'hidden';
+      }, 500);
+    }
+
+    // --- 2. LIVE CLOCK ---
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('clock').textContent = timeString;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // --- 3. WINDOW MANAGEMENT ---
+    let topZIndex = 100;
+
+    function openWindow(id) {
+      const win = document.getElementById(id);
+      win.style.display = 'flex';
+      focusWindow(win);
+    }
+
+    function closeWindow(id) {
+      const win = document.getElementById(id);
+      win.style.display = 'none';
+    }
+
+    function focusWindow(win) {
+      topZIndex++;
+      win.style.zIndex = topZIndex;
+    }
+
+    document.querySelectorAll('.window').forEach(win => {
+      win.addEventListener('mousedown', () => focusWindow(win));
+    });
+
+    // --- 4. DRAGGABLE WINDOW LOGIC ---
+    document.querySelectorAll('.window-header').forEach(header => {
+      header.addEventListener('mousedown', dragMouseDown);
+
+      function dragMouseDown(e) {
+        if (e.target.classList.contains('close-btn')) return;
+
+        e.preventDefault();
+        const windowEl = header.parentElement;
+        focusWindow(windowEl);
+
+        let initialX = e.clientX;
+        let initialY = e.clientY;
+
+        document.onmousemove = elementDrag;
+        document.onmouseup = closeDragElement;
+
+        function elementDrag(e) {
+          e.preventDefault();
+          let dx = initialX - e.clientX;
+          let dy = initialY - e.clientY;
+          initialX = e.clientX;
+          initialY = e.clientY;
+
+          windowEl.style.top = (windowEl.offsetTop - dy) + "px";
+          windowEl.style.left = (windowEl.offsetLeft - dx) + "px";
+        }
+
+        function closeDragElement() {
+          document.onmousemove = null;
+          document.onmouseup = null;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
