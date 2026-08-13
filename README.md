@@ -1,48 +1,48 @@
 # SujoyOS - Web OS Prototype
 
-A lightweight, browser-based Web OS prototype built with pure HTML, CSS, and Vanilla JavaScript.
+Web OS prototype made using HTML, CSS and JavaScript.
 
 ---
 
 ## Features
 
-- Welcome Screen: Smooth transition screen before entering the main desktop environment.
-- Live System Clock: Real-time clock updated dynamically in the top navigation bar.
-- Interactive Desktop: Clean layout with quick-launch application icons.
-- Window Management: Support for opening, closing, and dragging application windows around the screen.
-- Built-in Apps:
-  - First App: A lightweight dashboard demo window.
-  - Notes App: A functional text editor/scratchpad to type and store quick notes.
+- Welcome Screen: Smoother welcome screen before accessing main desktop.
+- Live System Clock: Real time system clock on the top navigation bar.
+- Interactive Desktop: Clear interface with application icons for quick launch.
+- Window Management: Ability to drag, close and manage application windows.
+- Built-in Applications:
+  - First Application: Lightweight dashboard/demo window.
+  - Notes App: A text editor to quickly take notes.
 
 ---
 
-## Built With
+## Technologies Used
 
-- HTML5 - Structure and semantic tags
-- CSS3 - Custom styling, animations, and responsive positioning
-- JavaScript (ES6+) - Window dragging mechanics and live time features
+- HTML5: Structure & Semantic Tags
+- CSS3: Custom style, animations & Responsive Positioning
+- JavaScript (ES6+): Dragging mechanism for windows and live system clock features
 
 ---
 
-## How to Run Locally
+## Running Locally
 
-Since this project is contained within a single file, running it is simple:
+Because this project is contained inside one file, running it is fairly easy:
 
-1. Clone the repository:
+1. Clone this repo:
    git clone https://github.com/your-username/your-repo-name.git
 
-2. Open the project:
-   Simply double-click the webos.html (or index.html) file to open it in any web browser.
+2. Open the Project:
+   Double Click on webos.html (or index.html) file to access it in a web browser.
 
 ---
 
 ## Live Demo (Optional)
 
-You can easily host this directly on GitHub Pages:
+It's very easy to host this on GitHub Pages:
 
-1. Go to your GitHub repository Settings.
-2. Navigate to Pages on the left menu.
-3. Under Branch, select main (or master) and click Save.
+1. Go to the settings page of your GitHub Repository.
+2. Go to the Pages section in the left menu. 
+3. Select Main (or Master) under the Branch field.
 4. Your Web OS will be live at: https://your-username.github.io/your-repo-name/
 
 ---
